@@ -6,8 +6,9 @@ RUN apt-get update \
         git \
         libsqlite3-dev \
         libzip-dev \
+        libicu-dev \
         unzip \
-    && docker-php-ext-install pdo_mysql pdo_sqlite zip \
+    && docker-php-ext-install pdo_mysql pdo_sqlite zip intl \
     && rm -rf /var/lib/apt/lists/*
 
 RUN echo "upload_max_filesize = 64M" > /usr/local/etc/php/conf.d/uploads.ini \
