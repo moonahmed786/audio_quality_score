@@ -78,9 +78,9 @@ paths:
           multipart/form-data:
             schema:
               type: object
-              required: [audio]
+              required: [file]
               properties:
-                audio:
+                file:
                   type: string
                   format: binary
                   description: The MP3 audio file
