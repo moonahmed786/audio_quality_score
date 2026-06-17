@@ -18,4 +18,8 @@ fi
 
 php artisan migrate --force --no-interaction
 
+if [ ! -L public/storage ]; then
+    php artisan storage:link
+fi
+
 exec "$@"

@@ -22,6 +22,7 @@ class ProcessAudioUpload implements ShouldQueue
     public int $timeout = 300;
 
     public function __construct(
+        private readonly int $uploadId,
         private readonly string $tempPath,
         private readonly string $originalFilename,
         private readonly ?string $title,
@@ -30,8 +31,18 @@ class ProcessAudioUpload implements ShouldQueue
 
     public function handle(Mp3Analyzer $analyzer): void
     {
+        $upload = AudioUpload::find($this->uploadId);
+        
+        if (! $upload) {
+            Log::error('ProcessAudioUpload: upload record missing', ['id' => $this->uploadId]);
+            return;
+        }
+
+        $upload->update(['status' => 'processing']);
+
         if (! file_exists($this->tempPath)) {
             Log::error('ProcessAudioUpload: temp file missing', ['path' => $this->tempPath]);
+            $upload->update(['status' => 'failed']);
             return;
         }
 
@@ -48,17 +59,16 @@ class ProcessAudioUpload implements ShouldQueue
 
         $analysis = $analyzer->analyze(Storage::disk('public')->path($path));
 
-        $upload = AudioUpload::query()->create([
-            'original_filename' => $this->originalFilename,
+        $upload->update([
             'storage_path' => $path,
             'content_hash' => $hash,
-            'file_size_bytes' => $this->fileSize,
             'duration_seconds' => $analysis->durationSeconds,
             'bitrate_kbps' => $analysis->bitrateKbps,
             'sample_rate_hz' => $analysis->sampleRateHz,
             'quality_score' => $analysis->qualityScore,
             'is_duration_outlier' => $analysis->isDurationOutlier,
             'duplicate_of_id' => $original?->id,
+            'status' => 'completed',
         ]);
 
         AudioFile::query()->create([
@@ -81,9 +91,14 @@ class ProcessAudioUpload implements ShouldQueue
     public function failed(\Throwable $exception): void
     {
         Log::error('ProcessAudioUpload failed', [
+            'id' => $this->uploadId ?? null,
             'path' => $this->tempPath,
             'error' => $exception->getMessage(),
         ]);
+
+        if (isset($this->uploadId)) {
+            AudioUpload::where('id', $this->uploadId)->update(['status' => 'failed']);
+        }
 
         if (file_exists($this->tempPath)) {
             @unlink($this->tempPath);

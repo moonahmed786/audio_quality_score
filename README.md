@@ -97,7 +97,7 @@ Tests use in-memory SQLite through `phpunit.xml` so they do not require a local 
 
 Multipart field:
 
-- `file`: required `.mp3`, max 50 MB
+- `file`: required `.mp3`, max 64 MB
 
 The response includes:
 

@@ -1,4 +1,4 @@
-@props(['src', 'id'])
+@props(['src', 'id', 'minimal' => false])
 
 <div x-data="{
     playing: false,
@@ -77,7 +77,7 @@
            @ended="onEnded()"
            @play="playing = true"
            @pause="playing = false"
-           @error="onError()"></audio>
+           x-on:error="onError()"></audio>
 
     <!-- Play/Pause -->
     <button type="button" @click="toggle()"
@@ -100,6 +100,7 @@
         </template>
     </button>
 
+    @if(!$minimal)
     <!-- Skip Backward -->
     <button type="button" @click="skip(-10)"
             class="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-gray-500 hover:text-white hover:bg-violet-600 transition" title="-10s">
@@ -146,4 +147,5 @@
         <input type="range" min="0" max="1" step="0.05" :value="volume" @input="setVolume($event)"
                class="w-14 h-1.5 bg-gray-200 rounded-full appearance-none cursor-pointer accent-violet-600">
     </div>
+    @endif
 </div>

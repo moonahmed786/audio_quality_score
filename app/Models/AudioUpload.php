@@ -19,6 +19,7 @@ class AudioUpload extends Model
         'quality_score',
         'is_duration_outlier',
         'duplicate_of_id',
+        'status',
     ];
 
     protected function casts(): array

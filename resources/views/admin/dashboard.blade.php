@@ -5,7 +5,7 @@
                 {{ __('Dashboard') }}
             </h2>
             <a href="{{ route('admin.audio-files.create') }}"
-               class="inline-flex items-center px-5 py-2.5 bg-violet-600 border border-transparent rounded-xl font-semibold text-sm text-white hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition shadow-md">
+               class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 border border-transparent rounded-2xl font-bold text-sm text-white hover:from-violet-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 hover:shadow-lg hover:shadow-violet-500/30 transform hover:-translate-y-0.5 transition-all duration-300">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -21,7 +21,8 @@
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
                 <!-- Total Files -->
-                <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:border-gray-300 transition-colors">
+                <div class="bg-white/80 backdrop-blur-md rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="flex items-start justify-between">
                         <div>
                             <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Total Files</span>
@@ -37,7 +38,8 @@
                 </div>
 
                 <!-- Storage -->
-                <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:border-gray-300 transition-colors">
+                <div class="bg-white/80 backdrop-blur-md rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="flex items-start justify-between">
                         <div>
                             <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Storage Used</span>
@@ -63,7 +65,8 @@
                 </div>
 
                 <!-- Recent Activity -->
-                <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:border-gray-300 transition-colors">
+                <div class="bg-white/80 backdrop-blur-md rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="flex items-start justify-between">
                         <div>
                             <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Recent</span>
@@ -80,7 +83,7 @@
             </div>
 
             <!-- Recent Uploads -->
-            <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+            <div class="bg-white/80 backdrop-blur-md rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
                 <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
@@ -137,7 +140,7 @@
                                 </svg>
                             </div>
                             <p class="text-sm font-medium">No audio files uploaded yet</p>
-                            <a href="{{ route('admin.audio-files.create') }}" class="inline-flex items-center gap-1 text-violet-600 hover:text-violet-800 font-semibold text-sm mt-2">
+                            <a href="{{ route('admin.audio-files.create') }}" class="inline-flex items-center gap-1 text-violet-600 hover:text-violet-700 font-bold text-sm mt-2 transition-colors">
                                 Upload your first file
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             </a>

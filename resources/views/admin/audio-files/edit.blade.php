@@ -17,7 +17,7 @@
 
     <div class="py-8">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+            <div class="bg-white/80 backdrop-blur-md rounded-3xl border border-gray-100 overflow-hidden shadow-lg">
                 <div class="p-8">
                     <form id="editForm"
                           method="POST"
@@ -108,7 +108,7 @@
                             <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">Title</label>
                             <input type="text" name="title" id="title" value="{{ old('title', $audioFile->title) }}" required
                                    placeholder="Enter a name for this audio file"
-                                   class="block w-full rounded-xl border-gray-200 focus:border-violet-500 focus:ring-violet-500 text-sm px-4 py-3 transition @error('title') border-red-300 focus:border-red-500 focus:ring-red-500 @enderror">
+                                   class="block w-full rounded-2xl border-gray-200 focus:border-violet-500 focus:ring-violet-500 shadow-sm text-sm px-4 py-3 transition @error('title') border-red-300 focus:border-red-500 focus:ring-red-500 @enderror">
                             @error('title')
                                 <p class="mt-1.5 text-sm text-red-600 flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
@@ -118,7 +118,7 @@
                         </div>
 
                         <!-- Current File -->
-                        <div class="mb-6 bg-gray-50/70 rounded-xl p-5 border border-gray-100">
+                        <div class="mb-6 bg-gray-50/70 rounded-2xl p-5 border border-gray-100 shadow-inner">
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-sm font-semibold text-gray-700">Current File</span>
                                 <span class="text-xs text-gray-400">{{ $audioFile->filename }}</span>
@@ -163,7 +163,7 @@
                                 @dragleave.prevent="dragging = false"
                                 @drop.prevent="handleDrop($event)"
                                 :class="dragging ? 'border-violet-500 bg-violet-50/50' : 'border-gray-200 bg-gray-50/50'"
-                                class="relative border-2 border-dashed rounded-xl p-8 text-center transition cursor-pointer hover:border-gray-300"
+                                class="relative border-2 border-dashed rounded-2xl p-8 text-center transition cursor-pointer hover:border-gray-300 hover:bg-gray-50/50"
                                 @click="document.getElementById('fileInput').click()">
 
                                 <template x-if="!newFile">
@@ -224,7 +224,7 @@
                         <!-- Actions -->
                         <div class="flex items-center gap-3 pt-2">
                             <button type="submit" :disabled="uploading"
-                                    class="inline-flex items-center px-6 py-2.5 bg-violet-600 border border-transparent rounded-xl font-semibold text-sm text-white hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-md">
+                                    class="inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 border border-transparent rounded-2xl font-bold text-sm text-white hover:from-violet-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-violet-500/30 transform hover:-translate-y-0.5 transition-all duration-300">
                                 <template x-if="!uploading">
                                     <span>Update File</span>
                                 </template>

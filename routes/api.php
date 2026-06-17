@@ -11,4 +11,5 @@ Route::middleware('auth.api')->group(function (): void {
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/upload', AudioUploadController::class)->middleware('throttle:upload');
+    Route::get('/upload/{id}', [AudioUploadController::class, 'show']);
 });
