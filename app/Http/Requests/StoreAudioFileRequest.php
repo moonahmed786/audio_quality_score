@@ -15,7 +15,7 @@ class StoreAudioFileRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'file' => ['required', 'file', 'mimes:mp3', 'max:65536'],
+            'file' => ['required', 'file', 'mimetypes:audio/mpeg,audio/mp3', 'mimes:mp3', 'max:65536'],
         ];
     }
 

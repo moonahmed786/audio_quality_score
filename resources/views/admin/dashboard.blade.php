@@ -5,7 +5,7 @@
                 {{ __('Dashboard') }}
             </h2>
             <a href="{{ route('admin.audio-files.create') }}"
-               class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 border border-transparent rounded-xl font-semibold text-sm text-white hover:from-violet-700 hover:to-fuchsia-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40">
+               class="inline-flex items-center px-5 py-2.5 bg-violet-600 border border-transparent rounded-xl font-semibold text-sm text-white hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition shadow-md">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -19,71 +19,68 @@
             <x-flash-message />
 
             <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
                 <!-- Total Files -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-6 relative overflow-hidden group hover:shadow-md transition-all duration-300">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-violet-100 to-fuchsia-50 rounded-bl-full -mr-8 -mt-8 opacity-60 group-hover:scale-110 transition-transform duration-500"></div>
-                    <div class="relative">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/25">
-                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
-                                </svg>
-                            </div>
-                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Files</span>
+                <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:border-gray-300 transition-colors">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Total Files</span>
+                            <div class="text-3xl font-bold text-gray-900 tracking-tight mt-3">{{ $stats['total_files'] }}</div>
+                            <div class="text-sm text-gray-400 mt-1">Audio files in library</div>
                         </div>
-                        <div class="text-4xl font-bold text-gray-900 tracking-tight">{{ $stats['total_files'] }}</div>
-                        <div class="text-sm text-gray-400 mt-1">Audio files in library</div>
+                        <div class="w-11 h-11 rounded-xl bg-violet-50 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-violet-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
+                            </svg>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Storage -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-6 relative overflow-hidden group hover:shadow-md transition-all duration-300">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-100 to-teal-50 rounded-bl-full -mr-8 -mt-8 opacity-60 group-hover:scale-110 transition-transform duration-500"></div>
-                    <div class="relative">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/25">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
-                                </svg>
-                            </div>
-                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Storage Used</span>
-                        </div>
-                        <div class="text-4xl font-bold text-gray-900 tracking-tight">
-                            @if ($stats['total_size'] > 0)
-                                @if ($stats['total_size'] > 1024 * 1024 * 1024)
-                                    {{ number_format($stats['total_size'] / 1024 / 1024 / 1024, 2) }}<span class="text-lg text-gray-400 font-medium ml-1">GB</span>
+                <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:border-gray-300 transition-colors">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Storage Used</span>
+                            <div class="text-3xl font-bold text-gray-900 tracking-tight mt-3">
+                                @if ($stats['total_size'] > 0)
+                                    @if ($stats['total_size'] > 1024 * 1024 * 1024)
+                                        {{ number_format($stats['total_size'] / 1024 / 1024 / 1024, 2) }}<span class="text-base text-gray-400 font-medium ml-1">GB</span>
+                                    @else
+                                        {{ number_format($stats['total_size'] / 1024 / 1024, 2) }}<span class="text-base text-gray-400 font-medium ml-1">MB</span>
+                                    @endif
                                 @else
-                                    {{ number_format($stats['total_size'] / 1024 / 1024, 2) }}<span class="text-lg text-gray-400 font-medium ml-1">MB</span>
+                                    0<span class="text-base text-gray-400 font-medium ml-1">MB</span>
                                 @endif
-                            @else
-                                0<span class="text-lg text-gray-400 font-medium ml-1">MB</span>
-                            @endif
+                            </div>
+                            <div class="text-sm text-gray-400 mt-1">Total storage consumed</div>
                         </div>
-                        <div class="text-sm text-gray-400 mt-1">Total storage consumed</div>
+                        <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+                            </svg>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Recent Activity -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-6 relative overflow-hidden group hover:shadow-md transition-all duration-300">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-100 to-orange-50 rounded-bl-full -mr-8 -mt-8 opacity-60 group-hover:scale-110 transition-transform duration-500"></div>
-                    <div class="relative">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Recent</span>
+                <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:border-gray-300 transition-colors">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Recent</span>
+                            <div class="text-3xl font-bold text-gray-900 tracking-tight mt-3">{{ $stats['recent_uploads']->count() }}</div>
+                            <div class="text-sm text-gray-400 mt-1">Latest uploads shown</div>
                         </div>
-                        <div class="text-4xl font-bold text-gray-900 tracking-tight">{{ $stats['recent_uploads']->count() }}</div>
-                        <div class="text-sm text-gray-400 mt-1">Uploads this session</div>
+                        <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Recent Uploads -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100/80 overflow-hidden">
+            <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
                 <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
@@ -108,7 +105,7 @@
                     @forelse ($stats['recent_uploads'] as $file)
                         <div class="p-4 flex items-center justify-between hover:bg-gray-50/50 transition group">
                             <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-50 to-fuchsia-50 flex items-center justify-center shrink-0 group-hover:from-violet-100 group-hover:to-fuchsia-100 transition">
+                                <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center shrink-0 group-hover:bg-violet-100 transition">
                                     <svg class="w-5 h-5 text-violet-600" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
                                     </svg>
@@ -119,6 +116,11 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">
+                                @if ($file->quality_score !== null)
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold {{ $file->quality_score >= 80 ? 'bg-emerald-50 text-emerald-600' : ($file->quality_score >= 50 ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600') }}">
+                                        Q{{ $file->quality_score }}
+                                    </span>
+                                @endif
                                 <span class="text-xs text-gray-400">{{ $file->created_at->diffForHumans() }}</span>
                                 <a href="{{ route('admin.audio-files.edit', $file) }}" class="opacity-0 group-hover:opacity-100 transition text-violet-600 hover:text-violet-800">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

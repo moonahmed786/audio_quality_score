@@ -17,7 +17,7 @@
 
     <div class="py-8">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
                 <div class="p-8">
                     <form id="editForm"
                           method="POST"
@@ -123,8 +123,35 @@
                                 <span class="text-sm font-semibold text-gray-700">Current File</span>
                                 <span class="text-xs text-gray-400">{{ $audioFile->filename }}</span>
                             </div>
-                            <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
+                            <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100 mb-3">
                                 <x-audio-player :src="asset('storage/' . $audioFile->file_path)" :id="$audioFile->id" />
+                            </div>
+                            <div class="flex flex-wrap gap-1.5">
+                                @if ($audioFile->bitrate_kbps)
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-600">
+                                        {{ $audioFile->bitrate_kbps }} kbps
+                                    </span>
+                                @endif
+                                @if ($audioFile->sample_rate_hz)
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-600">
+                                        {{ $audioFile->sample_rate_hz }} Hz
+                                    </span>
+                                @endif
+                                @if ($audioFile->duration)
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-600">
+                                        {{ sprintf('%02d:%02d', intdiv((int) round($audioFile->duration), 60), (int) round($audioFile->duration) % 60) }}
+                                    </span>
+                                @endif
+                                @if ($audioFile->quality_score !== null)
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium {{ $audioFile->quality_score >= 80 ? 'bg-emerald-50 text-emerald-600' : ($audioFile->quality_score >= 50 ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600') }}">
+                                        Quality: {{ $audioFile->quality_score }}/100
+                                    </span>
+                                @endif
+                                @if ($audioFile->is_duration_outlier)
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-rose-50 text-rose-600">
+                                        Duration Outlier
+                                    </span>
+                                @endif
                             </div>
                         </div>
 
@@ -197,7 +224,7 @@
                         <!-- Actions -->
                         <div class="flex items-center gap-3 pt-2">
                             <button type="submit" :disabled="uploading"
-                                    class="inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 border border-transparent rounded-xl font-semibold text-sm text-white hover:from-violet-700 hover:to-fuchsia-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-lg shadow-violet-500/25">
+                                    class="inline-flex items-center px-6 py-2.5 bg-violet-600 border border-transparent rounded-xl font-semibold text-sm text-white hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-md">
                                 <template x-if="!uploading">
                                     <span>Update File</span>
                                 </template>
@@ -212,7 +239,7 @@
                                 </template>
                             </button>
                             <a href="{{ route('admin.audio-files.index') }}"
-                               class="inline-flex items-center px-6 py-2.5 bg-white border border-gray-200 rounded-lg font-semibold text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition">
+                               class="inline-flex items-center px-6 py-2.5 bg-white border border-gray-300 rounded-xl font-semibold text-sm text-gray-800 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition">
                                 Cancel
                             </a>
                         </div>

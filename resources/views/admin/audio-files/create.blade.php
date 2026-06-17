@@ -17,7 +17,7 @@
 
     <div class="py-8">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
                 <div class="p-8">
                     <form id="uploadForm"
                           method="POST"
@@ -187,7 +187,7 @@
                         <!-- Actions -->
                         <div class="flex items-center gap-3 pt-2">
                             <button type="submit" :disabled="uploading || !file"
-                                    class="inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 border border-transparent rounded-xl font-semibold text-sm text-white hover:from-violet-700 hover:to-fuchsia-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-lg shadow-violet-500/25">
+                                    class="inline-flex items-center px-6 py-2.5 bg-violet-600 border border-transparent rounded-xl font-semibold text-sm text-white hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-md">
                                 <template x-if="!uploading">
                                     <span>Upload File</span>
                                 </template>
@@ -202,7 +202,7 @@
                                 </template>
                             </button>
                             <a href="{{ route('admin.audio-files.index') }}"
-                               class="inline-flex items-center px-6 py-2.5 bg-white border border-gray-200 rounded-lg font-semibold text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition">
+                               class="inline-flex items-center px-6 py-2.5 bg-white border border-gray-300 rounded-xl font-semibold text-sm text-gray-800 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition">
                                 Cancel
                             </a>
                         </div>

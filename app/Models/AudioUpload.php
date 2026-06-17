@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class AudioUpload extends Model
 {
@@ -34,5 +35,10 @@ class AudioUpload extends Model
     public function duplicateOf(): BelongsTo
     {
         return $this->belongsTo(self::class, 'duplicate_of_id');
+    }
+
+    public function audioFile(): HasOne
+    {
+        return $this->hasOne(AudioFile::class);
     }
 }
