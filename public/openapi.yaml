@@ -1,0 +1,115 @@
+openapi: 3.0.3
+info:
+  title: Audio Quality Score API
+  version: 1.0.0
+  description: API for uploading MP3 files to analyze duration, quality score, and detect duplicates.
+servers:
+  - url: http://127.0.0.1:8000/api
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password, password_confirmation]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                password_confirmation:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: User registered successfully
+  /auth/login:
+    post:
+      summary: Log in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Login successful and returns token
+  /auth/me:
+    get:
+      summary: Get current authenticated user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Authenticated user details
+  /auth/logout:
+    post:
+      summary: Log out
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+  /upload:
+    post:
+      summary: Upload and analyze an MP3 file
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [audio]
+              properties:
+                audio:
+                  type: string
+                  format: binary
+                  description: The MP3 audio file
+      responses:
+        '200':
+          description: Analysis successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  duration:
+                    type: number
+                    description: Duration of the audio file in seconds
+                  is_outlier:
+                    type: boolean
+                    description: Whether the duration is considered an outlier
+                  quality_score:
+                    type: integer
+                    description: Quality score from 1 to 10
+                  is_duplicate:
+                    type: boolean
+                    description: Whether the exact same file was already uploaded
+                  original_id:
+                    type: integer
+                    nullable: true
+                    description: ID of the original upload if it is a duplicate
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
