@@ -108,6 +108,60 @@ paths:
                     type: integer
                     nullable: true
                     description: ID of the original upload if it is a duplicate
+  /upload/{id}:
+    get:
+      summary: Get the status and details of an audio upload
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the audio upload
+      responses:
+        '200':
+          description: Upload status details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  status:
+                    type: string
+                    enum: [pending, processing, completed, failed]
+                  original_filename:
+                    type: string
+                  file_size_bytes:
+                    type: integer
+                  analysis:
+                    type: object
+                    properties:
+                      duration_seconds:
+                        type: number
+                        nullable: true
+                      duration:
+                        type: string
+                        nullable: true
+                      is_duration_outlier:
+                        type: boolean
+                        nullable: true
+                      quality_score:
+                        type: integer
+                        nullable: true
+                      bitrate_kbps:
+                        type: integer
+                        nullable: true
+                      sample_rate_hz:
+                        type: integer
+                        nullable: true
+                  is_duplicate:
+                    type: boolean
+        '404':
+          description: Upload not found
 components:
   securitySchemes:
     bearerAuth:

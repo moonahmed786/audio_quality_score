@@ -15,7 +15,7 @@ class UpdateAudioFileRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'file' => ['nullable', 'file', 'mimes:mp3', 'max:65536'],
+            'file' => ['nullable', 'file', 'mimetypes:audio/mpeg,audio/mp3', 'mimes:mp3', 'max:65536'],
         ];
     }
 

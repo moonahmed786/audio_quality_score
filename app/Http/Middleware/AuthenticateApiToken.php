@@ -27,7 +27,7 @@ class AuthenticateApiToken
             })
             ->first();
 
-        if ($token === null) {
+        if ($token === null || $token->user === null) {
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 

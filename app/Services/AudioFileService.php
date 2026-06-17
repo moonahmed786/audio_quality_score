@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AudioFile;
+use App\Models\AudioUpload;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +14,7 @@ class AudioFileService
 
     public function list(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
-        $query = AudioFile::query();
+        $query = AudioFile::query()->with('audioUpload');
 
         if (! empty($filters['search'])) {
             $search = $filters['search'];
@@ -39,8 +40,22 @@ class AudioFileService
         /** @var UploadedFile $file */
         $file = $data['file'];
         $path = $file->store('audio', 'public');
+        $fullPath = Storage::disk('public')->path($path);
+        $hash = hash_file('sha256', $fullPath);
 
-        $analysis = $this->analyzer->analyze(Storage::disk('public')->path($path));
+        $analysis = $this->analyzer->analyze($fullPath);
+
+        $upload = AudioUpload::query()->create([
+            'original_filename' => $file->getClientOriginalName(),
+            'storage_path' => $path,
+            'content_hash' => $hash,
+            'file_size_bytes' => $file->getSize() ?? 0,
+            'duration_seconds' => $analysis->durationSeconds,
+            'bitrate_kbps' => $analysis->bitrateKbps,
+            'sample_rate_hz' => $analysis->sampleRateHz,
+            'quality_score' => $analysis->qualityScore,
+            'is_duration_outlier' => $analysis->isDurationOutlier,
+        ]);
 
         return AudioFile::query()->create([
             'title' => $data['title'],
@@ -48,6 +63,12 @@ class AudioFileService
             'file_path' => $path,
             'size' => $file->getSize(),
             'duration' => $analysis->durationSeconds,
+            'audio_upload_id' => $upload->id,
+            'content_hash' => $hash,
+            'bitrate_kbps' => $analysis->bitrateKbps,
+            'sample_rate_hz' => $analysis->sampleRateHz,
+            'quality_score' => $analysis->qualityScore,
+            'is_duration_outlier' => $analysis->isDurationOutlier,
         ]);
     }
 
@@ -62,14 +83,37 @@ class AudioFileService
             }
 
             $path = $file->store('audio', 'public');
-            $analysis = $this->analyzer->analyze(Storage::disk('public')->path($path));
+            $fullPath = Storage::disk('public')->path($path);
+            $hash = hash_file('sha256', $fullPath);
+
+            $analysis = $this->analyzer->analyze($fullPath);
 
             $audioFile->fill([
                 'filename' => $file->getClientOriginalName(),
                 'file_path' => $path,
                 'size' => $file->getSize(),
                 'duration' => $analysis->durationSeconds,
+                'content_hash' => $hash,
+                'bitrate_kbps' => $analysis->bitrateKbps,
+                'sample_rate_hz' => $analysis->sampleRateHz,
+                'quality_score' => $analysis->qualityScore,
+                'is_duration_outlier' => $analysis->isDurationOutlier,
             ]);
+
+            // Also update linked AudioUpload if exists
+            if ($audioFile->audioUpload) {
+                $audioFile->audioUpload->update([
+                    'original_filename' => $file->getClientOriginalName(),
+                    'storage_path' => $path,
+                    'content_hash' => $hash,
+                    'file_size_bytes' => $file->getSize() ?? 0,
+                    'duration_seconds' => $analysis->durationSeconds,
+                    'bitrate_kbps' => $analysis->bitrateKbps,
+                    'sample_rate_hz' => $analysis->sampleRateHz,
+                    'quality_score' => $analysis->qualityScore,
+                    'is_duration_outlier' => $analysis->isDurationOutlier,
+                ]);
+            }
         }
 
         if (isset($data['title'])) {
@@ -83,6 +127,10 @@ class AudioFileService
 
     public function delete(AudioFile $audioFile): void
     {
+        if ($audioFile->audioUpload) {
+            $audioFile->audioUpload->delete();
+        }
+
         if ($audioFile->file_path && Storage::disk('public')->exists($audioFile->file_path)) {
             Storage::disk('public')->delete($audioFile->file_path);
         }
