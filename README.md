@@ -99,18 +99,46 @@ Multipart field:
 
 - `file`: required `.mp3`, max 64 MB
 
-The response includes:
+**Response:** `202 Accepted`
+```json
+{
+  "id": 1,
+  "status": "pending",
+  "message": "File uploaded successfully. Processing in background."
+}
+```
 
-- upload id
-- duplicate status and original upload id when applicable
-- duration in seconds and `mm:ss`
-- duration outlier flag
-- quality score from 1 to 10
-- bitrate, sample rate, and file size
+`GET /api/upload/{id}`
+
+Fetches the analysis results for a specific upload.
+
+**Response:** `200 OK`
+```json
+{
+  "id": 1,
+  "status": "completed",
+  "original_filename": "audio.mp3",
+  "file_size_bytes": 47712138,
+  "is_duplicate": false,
+  "duplicate": {
+    "is_duplicate": false,
+    "original_upload_id": null
+  },
+  "analysis": {
+    "duration_seconds": 123.45,
+    "duration": "02:03",
+    "is_duration_outlier": false,
+    "quality_score": 8,
+    "bitrate_kbps": 128,
+    "sample_rate_hz": 44100
+  }
+}
+```
 
 ## Architecture
 
-- `AudioUploadController` owns request validation, storage, persistence, and response shape.
+- `AudioUploadController` owns request validation, storing the temporary file, and dispatching the background job.
+- **Asynchronous Processing**: Analysis is dispatched to a background queue (`ProcessAudioUpload` job). This ensures that large file uploads do not cause web server timeouts during analysis, which is a critical improvement over synchronous processing.
 - `Mp3Analyzer` is a small service that reads MP3 frame headers directly, estimates duration, extracts bitrate/sample rate, and computes the quality score.
 - `AudioUpload` stores each upload attempt. Duplicate uploads are still recorded, but point at the earliest original upload with matching SHA-256 content hash.
 - Local Laravel storage is used for uploaded audio files.
@@ -129,6 +157,7 @@ These signals are simple, explainable proxies for MP3 quality without ML or adva
 
 ## Trade-offs
 
+- **Async over Sync**: The original requirement suggested returning the analysis results directly in the initial `POST` response. However, to prioritize stability and scalability for large files (up to 64MB), we made the explicit architectural trade-off to use a polling mechanism (`202 Accepted` + `GET` endpoint) with a background job.
 - A hand-written MP3 parser keeps dependencies low and makes the heuristic easy to inspect, but it will not handle every edge case that `ffprobe` or a mature media library would.
 - The API stores duplicate files as separate upload attempts to preserve auditability. A storage dedupe strategy would save disk space but adds lifecycle complexity.
 - Validation enforces `.mp3` extension and size. Deeper content validation is left to the analyzer metadata result.
@@ -136,7 +165,6 @@ These signals are simple, explainable proxies for MP3 quality without ML or adva
 ## With More Time
 
 - Use `ffprobe` or a maintained media parser for broader MP3/VBR metadata support.
-- Add authentication and per-user upload history.
-- Add async analysis for larger files.
+- Implement WebSockets or Server-Sent Events (SSE) to push status updates to the client instead of requiring polling.
 - Add storage lifecycle cleanup and optional deduped blobs.
 - Return richer validation errors for malformed MP3 content.

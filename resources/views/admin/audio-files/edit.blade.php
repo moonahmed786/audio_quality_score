@@ -144,7 +144,7 @@
                                 @endif
                                 @if ($audioFile->quality_score !== null)
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium {{ $audioFile->quality_score >= 80 ? 'bg-emerald-50 text-emerald-600' : ($audioFile->quality_score >= 50 ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600') }}">
-                                        Quality: {{ $audioFile->quality_score }}/100
+                                        Quality: {{ $audioFile->quality_score }}/10
                                     </span>
                                 @endif
                                 @if ($audioFile->is_duration_outlier)

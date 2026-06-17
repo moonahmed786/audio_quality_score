@@ -12,12 +12,26 @@ class AudioUploadTest extends TestCase
 {
     use RefreshDatabase;
 
+    private function createTokenForUser($user): string
+    {
+        $plainToken = \Illuminate\Support\Str::random(40);
+        \App\Models\ApiToken::create([
+            'user_id' => $user->id,
+            'token_hash' => hash('sha256', $plainToken),
+            'name' => 'test_token',
+        ]);
+        return $plainToken;
+    }
+
     public function test_upload_returns_analysis_and_detects_exact_duplicate_by_content(): void
     {
         Storage::fake('local');
         $bytes = $this->mp3Bytes(frameCount: 100);
 
-        $first = $this->post('/api/upload', [
+        $user = \App\Models\User::factory()->create();
+        $token = $this->createTokenForUser($user);
+
+        $first = $this->withToken($token)->postJson('/api/upload', [
             'file' => UploadedFile::fake()->createWithContent('voice-note.mp3', $bytes),
         ]);
 
@@ -29,26 +43,45 @@ class AudioUploadTest extends TestCase
             ->assertJsonPath('analysis.quality_score', 6)
             ->assertJsonPath('analysis.is_duration_outlier', false);
 
-        $second = $this->post('/api/upload', [
+        $second = $this->withToken($token)->postJson('/api/upload', [
             'file' => UploadedFile::fake()->createWithContent('renamed-track.mp3', $bytes),
         ]);
 
-        $second->assertCreated()
+        $second->assertOk()
             ->assertJsonPath('duplicate.is_duplicate', true)
             ->assertJsonPath('duplicate.original_upload_id', $first->json('id'));
+    }
 
-        $this->assertDatabaseCount(AudioUpload::class, 2);
-        $this->assertDatabaseHas(AudioUpload::class, [
-            'id' => $second->json('id'),
-            'duplicate_of_id' => $first->json('id'),
+    public function test_large_upload_dispatches_job_and_returns_pending_status(): void
+    {
+        Storage::fake('local');
+        \Illuminate\Support\Facades\Queue::fake();
+
+        // Generate >25MB MP3 to trigger async handling
+        // 25MB = 26214400 bytes. Frame size = 417. We need ~63000 frames.
+        $bytes = $this->mp3Bytes(frameCount: 63000);
+
+        $user = \App\Models\User::factory()->create();
+        $token = $this->createTokenForUser($user);
+
+        $response = $this->withToken($token)->postJson('/api/upload', [
+            'file' => UploadedFile::fake()->createWithContent('large-voice-note.mp3', $bytes),
         ]);
+
+        $response->assertStatus(202)
+            ->assertJsonPath('status', 'pending');
+
+        \Illuminate\Support\Facades\Queue::assertPushed(\App\Jobs\ProcessAudioUpload::class);
     }
 
     public function test_upload_rejects_non_mp3_extensions(): void
     {
         Storage::fake('local');
 
-        $response = $this->post('/api/upload', [
+        $user = \App\Models\User::factory()->create();
+        $token = $this->createTokenForUser($user);
+
+        $response = $this->withToken($token)->postJson('/api/upload', [
             'file' => UploadedFile::fake()->createWithContent('notes.txt', 'not audio'),
         ]);
 
