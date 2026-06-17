@@ -19,10 +19,10 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 COPY composer.json composer.lock ./
-RUN composer install --no-interaction --prefer-dist --no-scripts --no-autoloader
+RUN composer update --no-interaction --prefer-dist --no-scripts --no-autoloader
 
 COPY . .
-RUN composer install --optimize-autoloader --no-interaction --prefer-dist
+RUN composer update --optimize-autoloader --no-interaction --prefer-dist
 
 RUN chmod +x docker/entrypoint.sh \
     && mkdir -p storage/app storage/framework/cache storage/framework/sessions storage/framework/testing storage/framework/views storage/logs bootstrap/cache \
