@@ -3,7 +3,7 @@ set -e
 
 if [ -n "$DB_HOST" ]; then
     echo "Waiting for database at ${DB_HOST}:${DB_PORT:-3306}..."
-    until mysqladmin ping -h"$DB_HOST" -P"${DB_PORT:-3306}" -u"$DB_USERNAME" -p"$DB_PASSWORD" --silent; do
+    until mysqladmin ping -h"$DB_HOST" -P"${DB_PORT:-3306}" -u"$DB_USERNAME" -p"$DB_PASSWORD" --silent --skip-ssl; do
         sleep 2
     done
 fi
